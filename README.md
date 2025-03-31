@@ -1,51 +1,5 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
-# generate detailed and Clear documentation, this code is a murder mystery game made for pi-day hackathon, with pi being part of its core functionalities, highlight them:
-
-💫 Challenge
-Create a project where π isn't just a number, but a fundamental element of your solution. Use AI to amplify its significance and uncover new possibilities, much like how deep learning reveals patterns in the apparent chaos of data.
-
-🛠 Technical Requirements
-Submissions must demonstrate at least two:
-• Creative use of π in core functionality
-• Integration of AI technologies
-• Clear documentation
-• Working prototype
-• User interaction
-• Scalable design
-
-⚖️ Judging Criteria
-• Product Innovation \& Market Fit (20%)
-• AI \& π Integration Excellence (20%)
-• Technical Implementation (15%)
-• User Experience \& Design (15%)
-• Security \& Privacy Design (15%)
-• Documentation \& Presentation (15%)
----
-
-# generate detailed and Clear documentation, this code is a murder mystery game made for pi-day hackathon, with pi being part of its core functionalities, highlight them:
-
-💫 Challenge
-Create a project where π isn't just a number, but a fundamental element of your solution. Use AI to amplify its significance and uncover new possibilities, much like how deep learning reveals patterns in the apparent chaos of data.
-
-🛠 Technical Requirements
-Submissions must demonstrate at least two:
-• Creative use of π in core functionality
-• Integration of AI technologies
-• Clear documentation
-• Working prototype
-• User interaction
-• Scalable design
-
-⚖️ Judging Criteria
-• Product Innovation \& Market Fit (20%)
-• AI \& π Integration Excellence (20%)
-• Technical Implementation (15%)
-• User Experience \& Design (15%)
-• Security \& Privacy Design (15%)
-• Documentation \& Presentation (15%)
-
-**π Detective: The Irrational Murder** is a murder mystery game that deeply integrates mathematical concepts of π (pi) with AI-generated content. Designed for Pi-Day celebrations, it features unique π-driven mechanics across all gameplay aspects.
+# **π Detective: The Irrational Murder** is a murder mystery game that deeply integrates mathematical concepts of π (pi) with AI-generated content. Designed for Pi-Day celebrations, it features unique π-driven mechanics across all gameplay aspects.
 
 ## Core π Integrations
 
