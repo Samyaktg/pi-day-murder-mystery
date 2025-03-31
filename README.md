@@ -1,6 +1,6 @@
 
 # **π Detective: The Irrational Murder** is a murder mystery game that deeply integrates mathematical concepts of π (pi) with AI-generated content. Designed for Pi-Day celebrations, it features unique π-driven mechanics across all gameplay aspects.
-**Idea behind creations**: A video game based method to solve math puzzles and learn π based formulas. This application can be modifies into a full-fledged math game system to be used in schools and harder puzzles for university students to build their logical reasoning.
+**Idea behind this app**: A video game based method to solve math puzzles and learn π based formulas. This application can be modifies into a full-fledged math game system to be used in schools and harder puzzles for university students to build their logical reasoning.
 
 ## Core π Integrations
 
