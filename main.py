@@ -11,7 +11,7 @@ from io import BytesIO
 from google.genai import types
 
 # API configuration
-API_KEY = "AIzaSyCC93mbMLR_mjh0N6yX33LA8Oy9XKoMnGE"  # Replace with your actual Gemini API key
+API_KEY = "GOOGLE_API_KEY"  # Replace with your actual Gemini API key
 
 # Initialize Pygame
 pygame.init()
