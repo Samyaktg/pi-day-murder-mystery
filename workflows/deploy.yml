@@ -1,0 +1,27 @@
+name: Deploy Project
+
+on: [push]  # Runs the workflow when you push code
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Use Secret in Action
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          echo "Using secret in script..."
+          python -c "import os; print('API Key:', os.getenv('GOOGLE_API_KEY'))"  # Example usage
