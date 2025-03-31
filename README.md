@@ -126,9 +126,5 @@ import pygame  # Interactive interface
 
 This implementation demonstrates deep technical integration of π constants while maintaining engaging gameplay, satisfying all hackathon requirements through its unique fusion of mathematics and AI-generated storytelling.
 
-<div>⁂</div>
 
-[^1]: https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/50567243/87b8ef02-f102-4181-b368-c5e073f1183b/main.py
-
-[^2]: https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/50567243/87b8ef02-f102-4181-b368-c5e073f1183b/main.py
 
