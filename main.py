@@ -58,6 +58,7 @@ class GameState:
         self.current_room = None
         self.room_images = {}
         
+        
 
 
     def reset_game(self):
@@ -210,6 +211,7 @@ class GameState:
         Generate a short clue that could be found in a {room_name} in a murder mystery.
         The clue should be related to mathematics or π in some way.
         Keep it to one sentence and make it specific and observable.
+        
         """
         return generate_ai_content(prompt)
     
@@ -325,9 +327,34 @@ def clean_text_thoroughly(text):
     """
     if not text:
         return ""
-        
+    
+    # Convert any None values to empty strings
+    if text is None:
+        return ""
+    cleaned = text.replace('\\n', '\n')  # Keep actual newlines
+    quote_chars = ['"', '"', '"', '«', '»', '„', '‟', '❝', '❞', '〝', '〞', '＂']
+    apostrophe_chars = ["'", "'", "'", '‚', '‛', '`', '´', ''', ''', '′', '‵', '＇']
+    
+    # Replace all fancy quotes with standard ASCII double quote
+    for char in quote_chars:
+        cleaned = cleaned.replace(char, '"')
+    
+    # Replace all fancy apostrophes with standard ASCII apostrophe
+    for char in apostrophe_chars:
+        cleaned = cleaned.replace(char, "'")
+
+    # Handle escape sequences more thoroughly (this is the key issue with your output)
+    cleaned = text.replace('\\n', '\n')  # Keep actual newlines
+    cleaned = cleaned.replace('\\t', '    ')  # Replace tabs with spaces
+    cleaned = cleaned.replace('\\"', '"')  # Fix escaped double quotes
+    cleaned = cleaned.replace("\\'", "'")  # Fix escaped single quotes
+    cleaned = cleaned.replace('\\\\', '\\')  # Fix escaped backslashes
+    
     # First replace common markdown/formatting patterns
-    cleaned = text.replace('**', '').replace('*', '').replace('`', '').replace('"', '').replace('"', '"').replace('"', '"')
+    cleaned = cleaned.replace('**', '').replace('*', '').replace('`', '')
+    
+    # Replace fancy quotes with plain ASCII ones
+    cleaned = cleaned.replace('"', '"').replace('"', '"').replace('\'', "'").replace('\'', "'")
     
     # Replace bullet points and other special characters
     cleaned = cleaned.replace('•', '-').replace('…', '...').replace('—', '-').replace('–', '-')
@@ -335,13 +362,27 @@ def clean_text_thoroughly(text):
     # Replace any unicode quotes or apostrophes with simple versions
     cleaned = cleaned.replace(''', "'").replace(''', "'").replace('′', "'").replace('′', "'")
     
+    # Replace dashes and box characters with standard ASCII
+    cleaned = cleaned.replace('\u2013', '-').replace('\u2014', '-')  # En/Em dashes
+    cleaned = cleaned.replace('\u2015', '-').replace('\u2500', '-')  # Horizontal bars
+    cleaned = cleaned.replace('\u2501', '-').replace('\u2212', '-')  # More horizontal lines
+    cleaned = cleaned.replace('\u2012', '-').replace('\u2043', '-')  # Various hyphens
+    
+    # Replace box drawing characters
+    cleaned = cleaned.replace('\u2500', '-').replace('\u2501', '-')  # Box drawing horizontal
+    cleaned = cleaned.replace('\u2502', '|').replace('\u2503', '|')  # Box drawing vertical
+    cleaned = cleaned.replace('\u250C', '+').replace('\u250F', '+')  # Box drawing corners
+    cleaned = cleaned.replace('\u2510', '+').replace('\u2513', '+')  # More corners
+    cleaned = cleaned.replace('\u2514', '+').replace('\u2517', '+')  # More corners
+    cleaned = cleaned.replace('\u2518', '+').replace('\u251B', '+')  # More corners
+    cleaned = cleaned.replace('\u251C', '+').replace('\u2520', '+')  # T-junctions
+    cleaned = cleaned.replace('\u2524', '+').replace('\u2528', '+')  # More T-junctions
+    
     # Replace other common problematic characters
     cleaned = cleaned.replace('▪', '-').replace('■', '#').replace('□', '#').replace('▫', '-')
     cleaned = cleaned.replace('◆', '*').replace('●', '*').replace('○', 'o').replace('◯', 'o')
     cleaned = cleaned.replace('✓', 'v').replace('✔', 'v').replace('✗', 'x').replace('✘', 'x')
     cleaned = cleaned.replace('\u2022', '-')  # Bullet point
-    cleaned = cleaned.replace('\u2013', '-')  # En dash
-    cleaned = cleaned.replace('\u2014', '--')  # Em dash
     cleaned = cleaned.replace('\u2018', "'")   # Left single quote
     cleaned = cleaned.replace('\u2019', "'")   # Right single quote
     cleaned = cleaned.replace('\u201C', '"')   # Left double quote
@@ -349,6 +390,27 @@ def clean_text_thoroughly(text):
     cleaned = cleaned.replace('\u25A0', '#')   # Black square
     cleaned = cleaned.replace('\u25A1', '#')   # White square
     cleaned = cleaned.replace('\u25CF', '*')   # Black circle
+    
+    # Clean any Unicode block characters (common source of rectangles)
+    cleaned = cleaned.replace('\u2580', '^').replace('\u2581', '_')  # Block elements
+    cleaned = cleaned.replace('\u2582', '_').replace('\u2583', '_')  # More blocks
+    cleaned = cleaned.replace('\u2584', '_').replace('\u2585', '_')  # More blocks
+    cleaned = cleaned.replace('\u2586', '_').replace('\u2587', '_')  # More blocks
+    cleaned = cleaned.replace('\u2588', '#').replace('\u2589', '#')  # More blocks
+    cleaned = cleaned.replace('\u258A', '#').replace('\u258B', '#')  # More blocks
+    cleaned = cleaned.replace('\u258C', '|').replace('\u258D', '|')  # More blocks
+    cleaned = cleaned.replace('\u258E', '|').replace('\u258F', '|')  # More blocks
+    cleaned = cleaned.replace('\u2590', '|').replace('\u2591', '#')  # More blocks
+    cleaned = cleaned.replace('\u2592', '#').replace('\u2593', '#')  # More blocks
+    
+    # Handle any Unicode combining characters (these often cause rectangles)
+    cleaned = cleaned.replace('\u0300', '').replace('\u0301', '')
+    cleaned = cleaned.replace('\u0302', '').replace('\u0303', '')
+    cleaned = cleaned.replace('\u0304', '').replace('\u0305', '')
+    cleaned = cleaned.replace('\u0306', '').replace('\u0307', '')
+    cleaned = cleaned.replace('\u0308', '').replace('\u0309', '')
+    cleaned = cleaned.replace('\u030A', '').replace('\u030B', '')
+    cleaned = cleaned.replace('\u030C', '').replace('\u030D', '')
     
     # Filter out any remaining non-ASCII characters (this is the critical part)
     cleaned = ''.join(c if ord(c) < 128 else ' ' for c in cleaned)
@@ -380,7 +442,7 @@ class Button:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.action = action
-        self.color = RED
+        self.color = GRAY
         self.is_hovered = False
         self.is_pi_choice = is_pi_choice
         self.radius = radius  # For rounded corners
@@ -553,19 +615,36 @@ class ScrollableTextBox:
     def set_content(self, text_dict):
         """Accept a dictionary of text sections instead of a single string"""
         if isinstance(text_dict, str):
-            self.content = clean_text_thoroughly(text_dict)  # Clean entire string
+            # For string content, just clean it thoroughly
+            self.content = clean_text_thoroughly(text_dict)
         else:
-            # Format different sections with proper spacing and cleaner presentation
-            formatted_text = ""
+            # For dictionary content (dialogue sections), use a much simpler approach
+            formatted_text = []  # Build a list of lines instead of a string
+            
+            # Add each section with simple ASCII formatting
             for section_title, section_text in text_dict.items():
-                # Skip section formatting for "Atmosphere" to avoid box
-                if section_title == "Atmosphere":
-                    formatted_text += f"\n{clean_text_thoroughly(section_text)}\n\n"
-                else:
-                    formatted_text += f"\n{clean_text_thoroughly(section_title)}:\n"
-                    formatted_text += "─" * (len(section_title) + 1) + "\n"  # Separator line
-                    formatted_text += f"{clean_text_thoroughly(section_text)}\n\n"
-            self.content = formatted_text
+                # Clean the text
+                clean_title = clean_text_thoroughly(section_title)
+                clean_section_text = clean_text_thoroughly(section_text)
+                
+                # Add a blank line between sections
+                if formatted_text:
+                    formatted_text.append("")
+                
+                # Add the section title
+                if section_title != "Atmosphere":
+                    formatted_text.append(clean_title + ":")
+                    formatted_text.append("-" * (len(clean_title) + 1))
+                
+                # Add the section content
+                formatted_text.append(clean_section_text)
+                
+                # Add space after each section
+                formatted_text.append("")
+            
+            # Join the list into a string
+            self.content = "\n".join(formatted_text)
+        
         self.calculate_max_scroll()
         
     def calculate_max_scroll(self):
@@ -590,7 +669,7 @@ class ScrollableTextBox:
         for i in range(self.rect.height):
             alpha = int(255 * (1 - i/self.rect.height * 0.3))
             pygame.draw.line(gradient_surface, (*self.bg_color, alpha), 
-                           (0, i), (self.rect.width, i))
+                        (0, i), (self.rect.width, i))
         surface.blit(gradient_surface, self.rect)
         
         # Draw text with sections
@@ -601,25 +680,25 @@ class ScrollableTextBox:
         wrapped_lines = wrap_text(self.content, main_font, self.rect.width - 2*self.padding)
         
         for line in wrapped_lines:
-            if line.startswith("─"):  # Separator line
+            # Check if this is a separator line
+            if line.startswith("-") and len(line) > 1 and all(c == "-" for c in line):
                 pygame.draw.line(surface, GOLD,
-                               (clip_rect.x, y_offset + self.line_height//2),
-                               (clip_rect.right, y_offset + self.line_height//2), 1)
+                            (clip_rect.x, y_offset + self.line_height//2),
+                            (clip_rect.right, y_offset + self.line_height//2), 1)
             else:
                 # Check if this is a section title
                 is_title = line.endswith(":")
                 font = main_font if not is_title else pygame.font.Font(None, 36)
                 color = GOLD if is_title else WHITE
                 
-                text_surface = font.render(line, True, color)
-                if (y_offset + text_surface.get_height() > clip_rect.y and 
-                    y_offset < clip_rect.bottom):
-                    surface.blit(text_surface, (clip_rect.x, y_offset))
+                # Use our safe rendering function
+                if (y_offset + self.line_height > clip_rect.y and y_offset < clip_rect.bottom):
+                    safe_render_text(font, line, color, surface, clip_rect.x, y_offset)
             
             y_offset += self.line_height
             
         surface.set_clip(None)
-            
+        
         # Draw scroll indicators if scrollable
         if self.max_scroll > 0:
             if self.scroll_offset > 0:
@@ -782,6 +861,8 @@ class Suspect:
             3. A mathematical or π-related quirk in their behavior (in a separate line)
             4. A subtle detail that could be either suspicious or innocent (in a separate line)
             Keep it concise and engaging.
+            IMPORTANT: Use only plain text without any markdown, formatting symbols, bullet points, or special characters.
+
             """
             
             # Get Gemini's text response - Fix the API method call
@@ -933,12 +1014,15 @@ def get_case_description(game_state):
     3. A distinct personality trait
     4. A mathematical quirk or habit
 
-    Format the response as a simple list of 6 names with their roles, like:
-    1. [Name] - [Role]
-    2. [Name] - [Role]
-    etc.
+    IMPORTANT: Format your response EXACTLY like this, with one suspect per line:
+    1. Name - Role
+    2. Name - Role
+    3. Name - Role
+    4. Name - Role
+    5. Name - Role
+    6. Name - Role
 
-    Keep names and roles concise and memorable.
+    Use plain text format only. Use no special characters or formatting.
     """
     
     suspects_response = generate_ai_content(suspects_prompt)
@@ -946,12 +1030,45 @@ def get_case_description(game_state):
     # Parse the suspects response to get just the names and roles
     suspect_lines = [line.strip() for line in suspects_response.split('\n') if line.strip()]
     suspects = []
-    for line in suspect_lines:
-        if '-' in line:
-            # Extract name and role from format "1. Name - Role"
-            name_role = line.split('.', 1)[1].strip()
-            name, role = name_role.split('-', 1)
-            suspects.append((name.strip(), role.strip()))
+
+    # Look at your terminal output - it's outputting the suspects as one single line with numbers
+    # This means we need a different parsing approach
+    if len(suspect_lines) == 1 and "1." in suspect_lines[0] and "2." in suspect_lines[0]:
+        # Gemini returned all suspects on a single line
+        # Split by numbered markers
+        single_line = suspect_lines[0]
+        for i in range(1, 7):
+            marker = f"{i}."
+            next_marker = f"{i+1}." if i < 6 else ""
+            
+            if marker in single_line:
+                start_idx = single_line.find(marker) + len(marker)
+                end_idx = single_line.find(next_marker) if next_marker and next_marker in single_line else len(single_line)
+                
+                suspect_text = single_line[start_idx:end_idx].strip()
+                if "-" in suspect_text:
+                    name, role = suspect_text.split("-", 1)
+                    suspects.append((name.strip(), role.strip()))
+    else:
+        # Try the original line-by-line parsing for multiple lines
+        for line in suspect_lines:
+            # Look for numbered lines with names at the beginning
+            if line and (line[0].isdigit() or line.startswith('•') or line.startswith('-')):
+                # Remove any numbering from the beginning
+                if '.' in line and line[0].isdigit():
+                    line = line.split('.', 1)[1].strip()
+                
+                # Just get the first part up to the second dash (name & role)
+                if '-' in line:
+                    parts = line.split('-', 2)  # Split on first two dashes only
+                    if len(parts) >= 2:
+                        name = parts[0].strip()
+                        role = parts[1].strip()
+                        suspects.append((name, role))
+
+    # Print parsed suspects for debugging
+    print(f"Parsed {len(suspects)} suspects: {suspects}")
+
     
     # Now generate the full case description with these specific suspects
     case_prompt = f"""
@@ -984,6 +1101,31 @@ def get_mathematical_context(game_state):
         f"Water droplets forming perfect parabolas as they fall"
     ]
     return contexts[game_state.questions_asked % len(contexts)]
+
+def safe_render_text(font, text, color, surface, x, y):
+    """Safely render text without rectangle character issues"""
+    # Replace problematic characters with visually similar safe ones
+    safe_text = text.replace('"', '"').replace('"', '"').replace("'", "'").replace("'", "'")
+    safe_text = safe_text.replace('\\', '/')  # Replace backslash with forward slash
+    
+    try:
+        # Try to render the whole text at once
+        text_surface = font.render(safe_text, True, color)
+        surface.blit(text_surface, (x, y))
+    except:
+        # If that fails, render character by character
+        current_x = x
+        for char in safe_text:
+            if ord(char) < 128:  # Only ASCII characters
+                try:
+                    char_surface = font.render(char, True, color)
+                    surface.blit(char_surface, (current_x, y))
+                    current_x += char_surface.get_width()
+                except:
+                    # Skip any problematic character
+                    current_x += font.size(" ")[0]
+    
+    return font.size(safe_text)[0]  # Return the width of the rendered text
 
 # Then modify the get_atmospheric_details function to avoid repetition
 def get_atmospheric_details():
@@ -1130,9 +1272,9 @@ class QuestionMenu:
 game_state = GameState()
 buttons = []
 text_box = ScrollableTextBox(50, 50, WINDOW_WIDTH - 100, WINDOW_HEIGHT - 250)
-
+title_text_box = None
 # Create initial buttons for title screen
-start_button = Button(400,600, 200, 50, "Start Investigation", radius=15)
+start_button = Button(400, 600, 200, 50, "Start Investigation", radius=15)  # Changed positioning
 buttons = [start_button]
 
 # Input box for puzzles
@@ -1146,21 +1288,44 @@ running = True
 while running:
     # Clear screen based on current game screen
     if game_state.screen == "title":
-        screen.fill(DARK_BLUE)
         
         # Draw title
-        title_text = title_font.render("π Detective: The Irrational Murder", True, GOLD)
-        subtitle_text = main_font.render("A Mathematical Murder Mystery", True, WHITE)
+        #title_text = title_font.render("π Detective: The Irrational Murder", True, GOLD)
+        #subtitle_text = main_font.render("A Mathematical Murder Mystery", True, WHITE)
         bg = pygame.image.load("BG.png")
         screen.blit(bg,(0,0))
+        #screen.blit(title_text, (WINDOW_WIDTH//2 - title_text.get_width()//2, WINDOW_HEIGHT//4))
+        #screen.blit(subtitle_text, (WINDOW_WIDTH//2 - subtitle_text.get_width()//2, WINDOW_HEIGHT//4 + 60))
+        if title_text_box is None:
+            title_text_box = ScrollableTextBox(50, WINDOW_HEIGHT//2 + 50, WINDOW_WIDTH - 100, 250)
+            title_text_box.set_content("Welcome to π Detective: The Irrational Murder!\n\nClick 'Start Investigation' to begin your case.")
+    
+        # Draw PI symbol
+        #pi_text = pygame.font.Font(None, 150).render("π", True, RED)
+        #screen.blit(pi_text, (WINDOW_WIDTH//2 - pi_text.get_width()//2, WINDOW_HEIGHT//2 - 100))
         
         # Draw buttons
         for button in buttons:
             button.draw(screen)
 
+    # Modify the game screen rendering code
+    # Replace the text box recreation code in the game screen section with this:
     elif game_state.screen == "game":
         bg = pygame.image.load("BG_Game.png")
         screen.blit(bg,(0,0))
+        
+        # Update text box position based on room image if needed, but don't recreate it
+        text_box_y = 340 if game_state.current_room else 50
+        if text_box.rect.y != text_box_y:
+            # Only create a new text box if position needs to change
+            old_scroll = text_box.scroll_offset  # Save the scroll position
+            text_box = ScrollableTextBox(50, text_box_y, WINDOW_WIDTH - 100, WINDOW_HEIGHT - text_box_y - 200)
+            text_box.set_content(game_state.current_text)
+            text_box.scroll_offset = old_scroll  # Restore the scroll position
+        else:
+            # Just update the content if needed
+            if text_box.content != game_state.current_text:
+                text_box.set_content(game_state.current_text)
         
         # Draw room image if we have one
         if game_state.current_room and game_state.current_room in game_state.room_images:
@@ -1174,14 +1339,7 @@ while running:
             image_x = (WINDOW_WIDTH - room_image.get_width()) // 2
             screen.blit(room_image, (image_x, 20))
         
-        # Update text box content if needed
-        if text_box.content != game_state.current_text:
-            text_box.set_content(game_state.current_text)
-        
-        # Draw the text box below the room image
-        text_box_y = 340 if game_state.current_room else 50
-        text_box = ScrollableTextBox(50, text_box_y, WINDOW_WIDTH - 100, WINDOW_HEIGHT - text_box_y - 200)
-        text_box.set_content(game_state.current_text)
+        # Draw the text box (only once)
         text_box.draw(screen)
         
         # Update text box content if needed
@@ -1218,8 +1376,8 @@ while running:
             
             # Draw the menu
             suspect_menu.draw(screen)
-        
-        
+            
+            
         else:
             # Create regular buttons for main choices
             for button in buttons:
@@ -1300,6 +1458,10 @@ while running:
             
         # Title screen
         if game_state.screen == "title":
+            # Handle scrolling in the title screen
+            if event.type == pygame.MOUSEWHEEL:
+                title_text_box.handle_event(event)
+                
             for button in buttons:
                 action = button.handle_event(event)
                 if action == "Start Investigation":
@@ -1493,6 +1655,7 @@ while running:
                                         # Get response from Gemini
                                         response = generate_ai_content(prompt)
                                         
+                                        
                                         # Generate clue prompt based on the response
                                         clue_prompt = f"""
                                         Generate a short observational clue about {suspect_data['name']}'s behavior
@@ -1519,6 +1682,7 @@ while running:
                                             "Atmosphere": f"The {current_weather} as {suspect_data['name']} speaks..."
                                         }
                                         text_box.set_content(game_state.current_text)
+                                        print(game_state.current_text)
                                         break
                             
                     # Reset radial menu
@@ -1571,6 +1735,9 @@ while running:
                             choices=room_choices
                         )
                         game_state.current_stage = "explore"
+        # Add this to the game screen event handling section:
+        if game_state.screen == "game" and event.type == pygame.MOUSEWHEEL:
+            text_box.handle_event(event)
 
         if game_state.screen == "game" or game_state.screen == "conclusion":
             text_box.handle_event(event)
