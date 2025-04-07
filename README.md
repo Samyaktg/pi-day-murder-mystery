@@ -120,7 +120,8 @@ import pygame  # Interactive interface
 
 ## Demo
 
-[![Watch on LinkedIn](thumbnail.png)](https://www.linkedin.com/feed/update/urn:li:ugcPost:7312866595855327232)
+[Watch this video on LinkedIn](https://www.linkedin.com/feed/update/urn:li:ugcPost:7312866595855327232)
+
 
 
 ## Future Enhancements
