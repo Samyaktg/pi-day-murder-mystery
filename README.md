@@ -118,6 +118,11 @@ import pygame  # Interactive interface
 | Interactivity | Mouse/Keyboard controls, puzzle inputs |
 | Scalability | Modular case format, AI-powered expansion |
 
+## Demo
+
+[![Watch on LinkedIn](thumbnail.png)](https://www.linkedin.com/feed/update/urn:li:ugcPost:7312866595855327232)
+
+
 ## Future Enhancements
 
 1. **Multiplayer π Mysteries**: Collaborative digit sequence solving
